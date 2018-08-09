@@ -10,14 +10,13 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 public class DriverWaitHelper {
+
     /**
-     * @param iWait - implicit wait
-     * @param eWait - explicit wait
+     * @param iWait       - implicit wait
+     * @param eWait       - explicit wait
      * @param pollingTime - the interval taken between checking expected conditions. Default - FIVE_HUNDRED_MILLIS.
      */
-
-
-    public static WebDriverWait generateWaits (WebDriver driver, int iWait, int eWait, int pollingTime){
+    public static WebDriverWait generateWaits(WebDriver driver, int iWait, int eWait, int pollingTime) {
         driver.manage().timeouts().implicitlyWait(iWait, TimeUnit.SECONDS);
         WebDriverWait wait = new WebDriverWait(driver, eWait);
         wait.pollingEvery(pollingTime, TimeUnit.SECONDS);
