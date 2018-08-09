@@ -6,59 +6,66 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
 public class LogicChooseCredit extends MainLogic {
 
     private ElementsChooseCredit elements;
+    private WebDriver driver;
 
     public LogicChooseCredit(WebDriver driver, WebDriverWait wait, ElementsChooseCredit elements) {
         super(driver, wait);
         this.elements = elements;
+        this.driver = driver;
     }
 
+    /**
+     * Step 2 - choose sum with value 6000
+     */
     public void chooseAmountOfCredit() {
-        // Sets need limit
         waitForVisible(elements.value6000);
         clickWhenReady(elements.value6000);
         waitForVisible(elements.creditResults);
-        // Gets elements blocks
-        waitForVisible(elements.listOfBlocks);
+    }
 
-//        By.xpath("//ul[@class='available']//li[contains(@class, 'proposition')]")
+    /**
+     * Step 3 - choose proposition with minimal commission and click on it
+     */
+    public void choosePropositionWithMinimalCommission() {
+        Integer minimumCommission = findMinimumCommission(elements.listOfCommission);
+        clickWhenReady(getMinimalCommissionButton(minimumCommission));
 
-        WebElement rootList = driver.findElement(By.xpath("//div[@id='banks_by_condition']//ul[@class='available']"));
-        List<WebElement> foundElements = rootList.findElements(By.tagName("li"));
+    }
 
-//        List<WebElement> foundElements = driver.findElements(By.tagName("li"));
+    /**
+     * Finds minimal commission value in list with commissions
+     *
+     * @param listOfCommission - list with all existing commissions of WebElement type
+     * @return minimal commission value
+     */
+    private Integer findMinimumCommission(List<WebElement> listOfCommission) {
+        List<Integer> commissions = new ArrayList<>();
 
-        System.out.println("Size - " + foundElements.size());
-
-        for(WebElement element: foundElements){
-            WebElement commision = element.findElement(By.xpath("//div[contains(@class, 'full_commission')]/following-sibling::div[@class='cell']"));
-            System.out.println(commision.getText());
+        for (WebElement item : listOfCommission) {
+            String textSum = item.getText();
+            String sum = textSum.replaceAll("грн", "").trim();
+            int convertedValue = Integer.parseInt(sum);
+            commissions.add(convertedValue);
         }
 
-        List<WebElement> listOfBlocks = this.elements.listOfBlocks;
+        return Collections.min(commissions);
+    }
 
-//        for (WebElement block : listOfBlocks) {
-//            System.out.println("BLOCK ELEMENT - " + block);
-//
-//
-//            WebElement elementComimssion = block.findElement(By.xpath("//div[contains(@class, 'full_commission')]/following-sibling::div[@class='cell']"));
-//            System.out.println(elementComimssion.getText());
-//
-//        }
-
-
-        Integer minimumCommission = findMinimumCommission(this.elements.listOfCommission);
-        //div[contains(@class, 'full_commission')]/following-sibling::div[@class='cell']//span[text()='595']
-        clickWhenReady(this.elements.buyBtn);
-
-
-//        System.out.println(listOfBlocks);
-
-
+    /**
+     * Gets minimal commission Button WebElement
+     *
+     * @param minimalCommission - minimal commision value which will be used in xpath
+     * @return minimal commission button WebElement
+     */
+    private WebElement getMinimalCommissionButton(Integer minimalCommission) {
+        return driver.findElement(By.xpath("//div[@class='cell']/span[.='" + minimalCommission + "']/../../../../../..//a[@class='submit']"));
     }
 }
