@@ -1,5 +1,6 @@
 package tests;
 
+import constants.GlobalConstants;
 import elements.ElementsChooseCredit;
 import elements.ElementsMyWallet;
 import logic.LogicChooseCredit;
@@ -14,14 +15,14 @@ import org.testng.annotations.Test;
 import utils.DriverWaitHelper;
 
 public class SmokeTest {
-    private static final String START_PAGE = "https://sravnizajm.com.ua/vyberi-luchshij-kredit-onlajn/";
+
     private LogicChooseCredit logicChooseCredit;
     private LogicMyWallet logicMyWallet;
     private WebDriver driver;
 
     @BeforeClass
     public void setUp() {
-        System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY, System.getProperty("user.dir") + "/src/main/resources/chromedriver");
+        System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY, GlobalConstants.CHROME_DRIVER_WINDOWS_PATH);
         driver = new ChromeDriver();
         driver.manage().window().maximize();
 
@@ -30,7 +31,7 @@ public class SmokeTest {
         logicChooseCredit = new LogicChooseCredit(driver, wait, elementsChooseCredit);
         ElementsMyWallet elementsMyWallet = new ElementsMyWallet(driver);
         logicMyWallet = new LogicMyWallet(driver, wait, elementsMyWallet);
-        driver.get(START_PAGE);
+        driver.get(GlobalConstants.START_PAGE);
     }
 
     @AfterClass
@@ -39,9 +40,10 @@ public class SmokeTest {
     }
 
     @Test
-    public void test() {
+    public void testVerifyCreditFunctionality() {
         logicChooseCredit.chooseAmountOfCredit();
-        //logicMyWallet.useJavaScriptForSliderStyleChanging();
-        logicMyWallet.dragAndDrop();
+        logicChooseCredit.choosePropositionWithMinimalCommission();
+        logicMyWallet.verifyCreditAvailability();
+        logicMyWallet.verifyResult();
     }
 }
