@@ -66,6 +66,6 @@ public class LogicChooseCredit extends MainLogic {
      * @return minimal commission button WebElement
      */
     private WebElement getMinimalCommissionButton(Integer minimalCommission) {
-        return driver.findElement(By.xpath("//div[@class='cell']/span[.='" + minimalCommission + "']/../../../../../..//a[@class='submit']"));
+        return driver.findElement(By.xpath("//div[@class='cell']/span[.='" + minimalCommission + "']/ancestor::div[@class='bank-position']//a[@class='submit']"));
     }
 }
